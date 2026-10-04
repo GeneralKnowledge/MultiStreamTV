@@ -1,0 +1,83 @@
+station_name: "Tiny Station"
+media_root: media
+data_dir: data
+rescan_seconds: 20
+fallback_programme: autonomous
+
+web_host: "0.0.0.0"
+web_port: 8080
+
+stream:
+  # Leave url empty for local preview file output.
+  # For Restream / YouTube / etc:
+  #   url: rtmp://live.restream.io/live
+  #   key: your_stream_key
+  # Or set STREAM_URL / STREAM_KEY env vars.
+  url: ""
+  key: ""
+  local_output: data/preview/broadcast.ts
+  width: 1280
+  height: 720
+  fps: 30
+  video_bitrate: "1500k"
+  audio_bitrate: "128k"
+  audio_rate: 44100
+  preset: ultrafast
+  gop: 60
+
+overlays:
+  logo: true
+  now_playing: true
+  clock: true
+  live_badge: true
+
+programmes:
+  autonomous:
+    name: Autonomous
+    duration_minutes: 60
+    mode: weighted
+    weights:
+      music: 0.70
+      video: 0.12
+      ident: 0.08
+      announcement: 0.06
+      jingle: 0.04
+    visual_preference: [visual, image, generated]
+
+  late-night:
+    name: Late Night
+    duration_minutes: 90
+    mode: structure
+    structure:
+      - ident
+      - music
+      - music
+      - announcement
+      - music
+      - video
+      - music
+      - ident
+      - music
+    visual_preference: [visual, image]
+
+  strange-sunday:
+    name: Strange Sunday
+    duration_minutes: 120
+    mode: weighted
+    weights:
+      music: 0.45
+      video: 0.30
+      ident: 0.10
+      announcement: 0.10
+      jingle: 0.05
+    visual_preference: [visual, video, image]
+
+schedule:
+  "00:00":
+    programme: late-night
+  "06:00":
+    programme: autonomous
+  "18:00":
+    programme: strange-sunday
+  "22:00":
+    programme: late-night
