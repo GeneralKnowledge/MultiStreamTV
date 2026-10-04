@@ -73,7 +73,6 @@ class StreamOutput:
                 return
             self.prepare_fifo()
             dest = self.stream.rtmp_destination()
-            s = self.stream
             cmd = [
                 "ffmpeg",
                 "-hide_banner",
@@ -92,39 +91,17 @@ class StreamOutput:
                 "mpegts",
                 "-i",
                 str(self.fifo_path),
+                "-c",
+                "copy",
             ]
             if dest:
-                # Light restamp/re-encode keeps RTMP timestamps monotonic across
-                # segment boundaries (copy-mode shows discontinuities in logs).
-                cmd += [
-                    "-vf",
-                    f"fps={s.fps},format=yuv420p",
-                    "-af",
-                    f"aresample=async=1:first_pts=0,aformat=sample_rates={s.audio_rate}:channel_layouts=stereo",
-                    "-c:v",
-                    "libx264",
-                    "-preset",
-                    s.preset,
-                    "-tune",
-                    "zerolatency",
-                    "-b:v",
-                    s.video_bitrate,
-                    "-g",
-                    str(s.gop),
-                    "-c:a",
-                    "aac",
-                    "-b:a",
-                    s.audio_bitrate,
-                    "-ar",
-                    str(s.audio_rate),
-                    "-f",
-                    "flv",
-                    dest,
-                ]
+                # Single encode happens in SegmentComposer; copy here keeps
+                # 1-vCPU boxes viable. genpts absorbs segment-boundary jumps.
+                cmd += ["-f", "flv", dest]
                 log.info("Stream output → RTMP %s", self.target_label())
             else:
                 out = self.local_path()
-                cmd += ["-c", "copy", "-f", "mpegts", str(out)]
+                cmd += ["-f", "mpegts", str(out)]
                 log.info("Stream output → local file %s", out)
 
             self._proc = subprocess.Popen(
