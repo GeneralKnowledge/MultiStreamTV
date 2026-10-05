@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tiny Station</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="brand">
+      <p class="eyebrow">Cupboard broadcaster</p>
+      <h1 id="station-name">Tiny Station</h1>
+    </header>
+
+    <section class="status-panel" aria-live="polite">
+      <div class="status-row">
+        <span id="status-dot" class="dot off"></span>
+        <span id="status-text">LOADING</span>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt>Programme</dt>
+          <dd id="programme">—</dd>
+        </div>
+        <div>
+          <dt>Now</dt>
+          <dd id="now">—</dd>
+        </div>
+        <div>
+          <dt>Next</dt>
+          <dd id="next">—</dd>
+        </div>
+        <div>
+          <dt>Runtime</dt>
+          <dd id="runtime">—</dd>
+        </div>
+      </dl>
+      <p class="meta" id="stream-target"></p>
+    </section>
+
+    <section class="actions">
+      <details open>
+        <summary>Upload Media</summary>
+        <form id="upload-form">
+          <label>
+            Category
+            <select name="category">
+              <option value="music">Music</option>
+              <option value="video">Video</option>
+              <option value="visual">Visual</option>
+              <option value="jingle">Jingle</option>
+              <option value="announcement">Announcement</option>
+              <option value="image">Image</option>
+            </select>
+          </label>
+          <label>
+            Files
+            <input type="file" name="file" multiple accept="audio/*,video/*,image/*" required />
+          </label>
+          <button type="submit">Upload</button>
+          <p id="upload-msg" class="msg" hidden></p>
+        </form>
+      </details>
+
+      <details>
+        <summary>Media Library</summary>
+        <div id="media-list" class="media-list">Scanning…</div>
+      </details>
+
+      <details>
+        <summary>Recent Log</summary>
+        <pre id="log" class="log"></pre>
+      </details>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
